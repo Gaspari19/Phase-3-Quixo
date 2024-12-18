@@ -13,7 +13,7 @@ class Plateau:
     """Classe plateau servant à générer un plateau de jeu, à acceder
       aux élément du plateau et à modifier leurs positions."""
 
-    def __init__(self, plateau=None):
+    def __init__(self, plateau=None):#
         """Constructeur de la classe Plateau
 
         Vous ne devez rien modifier dans cette méthode.
