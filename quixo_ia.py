@@ -54,7 +54,6 @@ class QuixoIA(Quixo):
                         if i < 5:  # Déplacement vers la droite
                             coups_possibles.append({"origine": [i, j], "direction": "droite"})
                     
-
         # Retourne la liste complète des coups possibles
         return coups_possibles
 
@@ -83,49 +82,15 @@ class QuixoIA(Quixo):
         :return: "X", "O" si un joueur a gagné, ou None si la partie n'est pas encore terminée.
         """
         # Vérification pour le joueur "X"
-        if self.compter_lignes("X", 5) > 0:
+        if self.plateau.compter_lignes("X", 5) > 0:
             return "X"
         
         # Vérification pour le joueur "O"
-        if self.compter_lignes("O", 5) > 0:
+        if self.plateau.compter_lignes("O", 5) > 0:
             return "O"
         
         # Si aucune ligne, colonne ou diagonale de 5 cubes n'est trouvée
         return None
-    
-    def compter_lignes(self, joueur, longueur):
-        """
-        Compte le nombre de groupes de cubes d'une certaine longueur appartenant à un joueur donné 
-        sur une ligne, une colonne ou une diagonale.
-
-        :param joueur: "X" ou "O" pour identifier le joueur.
-        :param longueur: Longueur des groupes à analyser (2, 3, 4, ou 5).
-        :return: Nombre total de groupes trouvés.
-        """
-        total_groupes = 0
-
-        # Vérification des lignes
-        for ligne in range(1, 6):
-            contenu = [self.plateau[(col, ligne)] for col in range(1, 6)]
-            if contenu.count(joueur) == longueur:
-                total_groupes += 1
-
-        # Vérification des colonnes
-        for col in range(1, 6):
-            contenu = [self.plateau[(col, ligne)] for ligne in range(1, 6)]
-            if contenu.count(joueur) == longueur:
-                total_groupes += 1
-
-        # Vérification des diagonales
-        diagonale_principale = [self.plateau[(i, i)] for i in range(1, 6)]
-        diagonale_secondaire = [self.plateau[(i, 6 - i)] for i in range(1, 6)]
-        
-        if diagonale_principale.count(joueur) == longueur:
-            total_groupes += 1
-        if diagonale_secondaire.count(joueur) == longueur:
-            total_groupes += 1
-
-        return total_groupes
     
     def trouver_un_coup_vainqueur(self, joueur):
         """
@@ -134,19 +99,91 @@ class QuixoIA(Quixo):
         :param joueur: Le symbole du joueur ("X" ou "O").
         :return: Un tuple ([x, y], direction) représentant le coup vainqueur ou None si aucun coup n'est trouvé.
         """
+        # Liste des coups possibles (obtenue via la méthode lister_les_coups_possibles)
         coups_possibles = self.lister_les_coups_possibles(self.plateau, joueur)
+        
+        # Parcours des coups possibles
         for coup in coups_possibles:
-            i,j=coup['origine']
-            direction = coup['direction']
+            # Simulation du coup : déplace le jeton et retourne une copie du tableau avec la simulation
+            plateau_simulé = self.plateau.simuler_coup(joueur, coup['origine'], coup['direction'])
+            
+            # Vérifie si la simulation cela entraîne une victoire
+            if plateau_simulé.partie_terminée() == joueur:
+                # Si c'est un coup gagnant, retourne le coup (coordonnée et direction)
+                return coup
+        
+        # Si aucun coup gagnant n'est trouvé, retourne None
+        return None
 
+    def trouver_un_coup_bloquant(self, joueur):
+        """
+        Identifie un coup permettant de bloquer une victoire imminente de l'adversaire.
+
+        :param joueur: Le symbole du joueur ("X" ou "O").
+        :return: Un tuple ([x, y], direction) représentant le coup bloquant ou None si aucun coup bloquant n'est trouvé.
+        """
+        # Identifier l'adversaire
+        adversaire = "O" if joueur == "X" else "X"
+
+        # Utiliser trouver_un_coup_vainqueur pour trouver si l'adversaire a un coup gagnant
+        coup_gagnant_adversaire = self.trouver_un_coup_vainqueur(adversaire)
+
+        # Si un tel coup existe
+        if coup_gagnant_adversaire:
+            # Et que ce coup est parmis la liste des coups possibles du joueurs, retourne ce coup comme coup bloquant
+            if coup_gagnant_adversaire in self.lister_les_coups_possibles(self.plateau, joueur):
+                return coup_gagnant_adversaire
+
+        # Aucun coup bloquant trouvé
+        return None
+
+    def jouer_un_coup(self, joueur):
+        """
+        Effectue un coup pour le joueur donné, en cherchant d'abord les coups gagnants ou bloquants.
+
+        :param joueur: Le symbole du joueur ("X" ou "O").
+        :return: Un tuple ([x, y], direction) représentant le coup joué.
+        :raises QuixoError: Si la partie est terminée ou si le symbole du joueur est invalide.
+        """
+        if joueur not in ("X", "O"):
+            raise QuixoError('Le symbole doit être "X" ou "O".')
+        if self.partie_terminée():
+            raise QuixoError("La partie est déjà terminée.")
+        
+        # Priorité 1 : Coup gagnant
+        coup_vainqueur = self.trouver_un_coup_vainqueur(joueur)
+        if coup_vainqueur:
+            self.plateau.insérer_un_cube(joueur, coup_vainqueur['origine'], coup_vainqueur['direction'])
+            return coup_vainqueur,str(self.plateau)
+        
+        # Priorité 2 : Coup bloquant
+        coup_bloquant = self.trouver_un_coup_bloquant(joueur)
+        if coup_bloquant:
+            self.plateau.insérer_un_cube(joueur, coup_bloquant['origine'], coup_bloquant['direction'])
+            return coup_bloquant,str(self.plateau)
+        
+        # Priorité 3 : Coup aléatoire si aucun autre choix
+        import random
+        coups_possibles = self.lister_les_coups_possibles(self.plateau, joueur)
+        coup = random.choice(coups_possibles)
+        self.plateau.insérer_un_cube(joueur, coup['origine'], coup['direction'])
+        return coup,str(self.plateau)
     
 IA= QuixoIA(['MOI','TOI'])
 tableau = [
-    ["O", " ", "X", " ", " "],
-    [" ", "X", " ", "X", "O"],
+    ["X", " ", "X", " ", " "],
+    [" ", " ", " ", "O", "O"],
     [" ", "O", "X", " ", "O"],
     [" ", "X", "X", "X", "O"],
-    ["X", " ", " ", " ", "O"]
+    [" ", " ", " ", " ", "O"]
 ]
 table=Plateau(tableau)
-print(table,IA.lister_les_coups_possibles(table,'X'), IA.analyser_le_plateau(table))
+IA.plateau = table
+print(IA.plateau,IA.lister_les_coups_possibles(table,'O'))
+print('\n')
+print(IA.lister_les_coups_possibles(table,'X'))
+print('\n')
+print(IA.trouver_un_coup_vainqueur("O"),'\n', IA.trouver_un_coup_vainqueur('X'),'\n', IA.trouver_un_coup_bloquant('X'))
+fin=IA.jouer_un_coup('X')
+print('\n')
+print(fin[0],fin[1])

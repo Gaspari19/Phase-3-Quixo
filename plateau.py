@@ -13,7 +13,7 @@ class Plateau:
     """Classe plateau servant à générer un plateau de jeu, à acceder
       aux élément du plateau et à modifier leurs positions."""
 
-    def __init__(self, plateau=None):#
+    def __init__(self, plateau=None):
         """Constructeur de la classe Plateau
 
         Vous ne devez rien modifier dans cette méthode.
@@ -181,59 +181,94 @@ class Plateau:
             self.insérer_par_la_droite(cube, origine)
 
     def insérer_par_le_bas(self, cube, origine):
-        """Insère un cube dans le plateau en direction du bas
+        """
+        Insère un cube dans le plateau en direction du bas.
 
         Args:
             cube (str): La valeur du cube à insérer, soit "X" ou "O".
             origine (list[int]): La position [x, y] d'origine du cube à insérer.
+
+        Raises:
+            QuixoError: Si l'insertion par le bas est interdite.
         """
         x, y = origine
 
+        # Validation
+        if y == 5:
+            raise QuixoError("Le cube ne peut pas être inséré dans cette direction.")
+
+        # Déplacement des cubes
         for i in range(y, 5):
-            self[x, i] = self[x, i+1]
+            self[x, i] = self[x, i + 1]
 
         self[x, 5] = cube
 
     def insérer_par_le_haut(self, cube, origine):
-        """Insère un cube dans le plateau en direction du haut
+        """
+        Insère un cube dans le plateau en direction du haut.
 
         Args:
             cube (str): La valeur du cube à insérer, soit "X" ou "O".
             origine (list[int]): La position [x, y] d'origine du cube à insérer.
+
+        Raises:
+            QuixoError: Si l'insertion par le haut est interdite.
         """
         x, y = origine
 
+        # Validation
+        if y == 1:
+            raise QuixoError("Le cube ne peut pas être inséré dans cette direction.")
+
+        # Déplacement des cubes
         for i in range(y, 1, -1):
-            self[x, i] = self[x, i-1]
+            self[x, i] = self[x, i - 1]
 
         self[x, 1] = cube
 
-
     def insérer_par_la_gauche(self, cube, origine):
-        """Insère un cube dans le plateau en direction de la gauche
+        """
+        Insère un cube dans le plateau en direction de la gauche.
 
         Args:
             cube (str): La valeur du cube à insérer, soit "X" ou "O".
             origine (list[int]): La position [x, y] d'origine du cube à insérer.
+
+        Raises:
+            QuixoError: Si l'insertion par la gauche est interdite.
         """
         colone_origine, ligne_origine = origine
 
-        for i in range(colone_origine,1,-1):
-            self[i,ligne_origine] = self[i-1,ligne_origine]
+        # Validation
+        if colone_origine == 1:
+            raise QuixoError("Le cube ne peut pas être inséré dans cette direction.")
 
-        self[1,ligne_origine] = cube
+        # Déplacement des cubes
+        for i in range(colone_origine, 1, -1):
+            self[i, ligne_origine] = self[i - 1, ligne_origine]
+
+        self[1, ligne_origine] = cube
 
     def insérer_par_la_droite(self, cube, origine):
-        """Insère un cube dans le plateau en direction de la droite
+        """
+        Insère un cube dans le plateau en direction de la droite.
 
         Args:
             cube (str): La valeur du cube à insérer, soit "X" ou "O".
             origine (list[int]): La position [x, y] d'origine du cube à insérer.
+
+        Raises:
+            QuixoError: Si l'insertion par la droite est interdite.
         """
         colone_origine, ligne_origine = origine
 
+        # Validation
+        if colone_origine == 5:
+            raise QuixoError("Le cube ne peut pas être inséré dans cette direction.")
+
+        # Déplacement des cubes
         for i in range(colone_origine, 5):
-            self[i,ligne_origine] = self[i+1,ligne_origine]
+            self[i, ligne_origine] = self[i + 1, ligne_origine]
 
         self[5, ligne_origine] = cube
 
@@ -247,9 +282,6 @@ class Plateau:
         :return: Nombre total de groupes trouvés.
         """
         total_groupes = 0
-
-
-
 
         # Vérification des lignes
         for ligne in range(1, 6):
@@ -273,3 +305,55 @@ class Plateau:
             total_groupes += 1
 
         return total_groupes
+
+    def simuler_coup(self,cube,origine, direction):
+        """
+        Simule un coup en déplaçant un cube depuis une position donnée dans une direction donnée.
+        
+        :param x: Colonne d'origine du cube (1 à 5).
+        :param y: Ligne d'origine du cube (1 à 5).
+        :param direction: Direction du déplacement ("haut", "bas", "gauche", "droite").
+        :param joueur: Le joueur effectuant le coup ("X" ou "O").
+        :return: Une nouvelle instance de Plateau représentant l'état simulé du plateau après le coup.
+        :raises QuixoError: Si les paramètres du coup sont invalides.
+        """
+        # Crée une copie du plateau actuel pour la simulation
+        plateau_simule  =  Plateau(self.état_plateau())
+
+        # Déplace le cube sur le plateau simulé
+        plateau_simule.insérer_un_cube(cube,origine, direction)
+
+        # Retourne le plateau simulé
+        return plateau_simule
+    
+    def partie_terminée(self):
+        """
+        Vérifie si la partie est terminée et identifie le vainqueur éventuel.
+
+        :return: "X", "O" si un joueur a gagné, ou None si la partie n'est pas encore terminée.
+        """
+        # Vérification pour le joueur "X"
+        if self.compter_lignes("X", 5) > 0:
+            return "X"
+        
+        # Vérification pour le joueur "O"
+        if self.compter_lignes("O", 5) > 0:
+            return "O"
+        
+        # Si aucune ligne, colonne ou diagonale de 5 cubes n'est trouvée
+        return None
+
+
+
+
+tableau = [
+    ["X", " ", "X", " ", " "],
+    [" ", " ", " ", "O", "O"],
+    [" ", "O", "X", " ", " "],
+    [" ", "X", "X", "X", "O"],
+    [" ", " ", " ", " ", "O"]
+]
+table=Plateau(tableau)
+
+table.insérer_un_cube('X',[1,1],'droite')
+print(table)
