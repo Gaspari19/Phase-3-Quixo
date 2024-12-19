@@ -22,7 +22,7 @@ class QuixoIA(Quixo):
         # Vérifie si la partie est terminée
         if self.partie_terminée():
             raise QuixoError("La partie est déjà terminée.")
-        
+
         # Initialisation de la liste des coups possibles
         coups_possibles = []
 
@@ -89,7 +89,7 @@ class QuixoIA(Quixo):
         # Vérification pour le joueur "X"
         if self.plateau.compter_lignes("X", 5) > 0:
             return "X"
-        
+
         # Vérification pour le joueur "O"
         if self.plateau.compter_lignes("O", 5) > 0:
             return "O"
@@ -110,7 +110,7 @@ class QuixoIA(Quixo):
 
         # Parcours des coups possibles
         for coup in coups_possibles:
-            # Simulation du coup : déplace le jeton et retourne une copie du tableau 
+            # Simulation du coup : déplace le jeton et retourne une copie du tableau
             # avec la simulation
             plateau_simulé = self.plateau.simuler_coup(joueur, coup['origine'], coup['direction'])
 
@@ -138,7 +138,7 @@ class QuixoIA(Quixo):
 
         # Si un tel coup existe
         if coup_gagnant_adversaire:
-            # Et que ce coup est parmis la liste des coups possibles du joueurs, 
+            # Et que ce coup est parmis la liste des coups possibles du joueurs,
             # retourne ce coup comme coup bloquant
             if coup_gagnant_adversaire in self.lister_les_coups_possibles(self.plateau, joueur):
                 return coup_gagnant_adversaire
@@ -174,10 +174,7 @@ class QuixoIA(Quixo):
             return coup_bloquant
 
         # Priorité 3 : Coup aléatoire si aucun autre choix
-        import random
         coups_possibles = self.lister_les_coups_possibles(self.plateau, joueur)
         coup = random.choice(coups_possibles)
         self.plateau.insérer_un_cube(joueur, coup['origine'], coup['direction'])
         return coup
-    
-

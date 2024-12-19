@@ -343,5 +343,3 @@ class Plateau:
 
         # Si aucune ligne, colonne ou diagonale de 5 cubes n'est trouvée
         return None
-
-

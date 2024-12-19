@@ -47,8 +47,7 @@ if __name__ == "__main__":
 
                 # Vérifie si la partie est terminée
                 id_partie, joueurs, plateau, vainqueur = récupérer_une_partie(id_partie,
-                                                                               args.idul, SECRET)
-                
+                                                             args.idul, SECRET)
                 if vainqueur:
                     print(f"\nPartie terminée ! Le gagnant est : {vainqueur}")
                     break
