@@ -1,7 +1,7 @@
-
 import random
 from quixo import Quixo, QuixoError
 """Importation eds modules qui permettent d'utiliser la class QuixoIA"""
+
 class QuixoIA(Quixo):
     """Class qui permet a l'ordinateur de jouer de facon autonome"""
     def lister_les_coups_possibles(self, plateau, cube):
