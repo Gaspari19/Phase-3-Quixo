@@ -248,6 +248,9 @@ class Plateau:
         """
         total_groupes = 0
 
+
+
+
         # Vérification des lignes
         for ligne in range(1, 6):
             contenu = [self[col, ligne] for col in range(1, 6)]
