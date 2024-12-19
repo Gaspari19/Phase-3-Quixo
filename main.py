@@ -6,7 +6,8 @@ Ce programme permet de jouer au jeu Quixo.
 
 from api import initialiser_partie, jouer_un_coup, récupérer_une_partie
 from quixo import Quixo, interpréter_la_commande
-from quixo_ia import QuixoIA, Plateau
+from quixo_ia import QuixoIA
+from plateau import Plateau
 
 SECRET = "e7cd4ac8-6447-4447-8019-e26b53e90ae9"
 
