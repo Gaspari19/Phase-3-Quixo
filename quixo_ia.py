@@ -7,7 +7,7 @@ import random
 from quixo import Quixo, QuixoError
 
 class QuixoIA(Quixo):
-    """Class qui permet a l'ordinateur de jouer de facon autonome"""
+    """Class qui permet de jouer contre le serveur de facon autonome"""
     def lister_les_coups_possibles(self, plateau, cube):
         """
         Liste tous les coups possibles pour un joueur donné.
