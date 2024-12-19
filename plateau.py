@@ -343,17 +343,3 @@ class Plateau:
         # Si aucune ligne, colonne ou diagonale de 5 cubes n'est trouvée
         return None
 
-
-
-
-tableau = [
-    ["X", " ", "X", " ", " "],
-    [" ", " ", " ", "O", "O"],
-    [" ", "O", "X", " ", " "],
-    [" ", "X", "X", "X", "O"],
-    [" ", " ", " ", " ", "O"]
-]
-table=Plateau(tableau)
-
-table.insérer_un_cube('X',[1,1],'droite')
-print(table)

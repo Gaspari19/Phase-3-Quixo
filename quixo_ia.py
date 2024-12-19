@@ -154,36 +154,19 @@ class QuixoIA(Quixo):
         coup_vainqueur = self.trouver_un_coup_vainqueur(joueur)
         if coup_vainqueur:
             self.plateau.insérer_un_cube(joueur, coup_vainqueur['origine'], coup_vainqueur['direction'])
-            return coup_vainqueur,str(self.plateau)
+            return coup_vainqueur
         
         # Priorité 2 : Coup bloquant
         coup_bloquant = self.trouver_un_coup_bloquant(joueur)
         if coup_bloquant:
             self.plateau.insérer_un_cube(joueur, coup_bloquant['origine'], coup_bloquant['direction'])
-            return coup_bloquant,str(self.plateau)
+            return coup_bloquant
         
         # Priorité 3 : Coup aléatoire si aucun autre choix
         import random
         coups_possibles = self.lister_les_coups_possibles(self.plateau, joueur)
         coup = random.choice(coups_possibles)
         self.plateau.insérer_un_cube(joueur, coup['origine'], coup['direction'])
-        return coup,str(self.plateau)
+        return coup
     
-IA= QuixoIA(['MOI','TOI'])
-tableau = [
-    ["X", " ", "X", " ", " "],
-    [" ", " ", " ", "O", "O"],
-    [" ", "O", "X", " ", "O"],
-    [" ", "X", "X", "X", "O"],
-    [" ", " ", " ", " ", "O"]
-]
-table=Plateau(tableau)
-IA.plateau = table
-print(IA.plateau,IA.lister_les_coups_possibles(table,'O'))
-print('\n')
-print(IA.lister_les_coups_possibles(table,'X'))
-print('\n')
-print(IA.trouver_un_coup_vainqueur("O"),'\n', IA.trouver_un_coup_vainqueur('X'),'\n', IA.trouver_un_coup_bloquant('X'))
-fin=IA.jouer_un_coup('X')
-print('\n')
-print(fin[0],fin[1])
+

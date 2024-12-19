@@ -114,14 +114,31 @@ class Quixo:
 
 
 def interpréter_la_commande():
-    """Génère un interpréteur de commande.
+    """
+    Génère un interpréteur de commande.
+
     Returns:
         Namespace: Un objet Namespace tel que retourné par parser.parse_args().
-            Cet objet aura l'attribut «idul» représentant l'idul du joueur
-            et l'attribut «parties» qui est un booléen True/False.
+            Cet objet aura :
+            - l'attribut «idul» représentant l'idul du joueur (argument positionnel),
+            - l'attribut «autonome» qui est un booléen (option -a ou --autonome).
     """
+    # Création de l'objet ArgumentParser
     parser = argparse.ArgumentParser(description="Quixo")
-
-    parser.add_argument("idul",type=str,help="IDUL du joueur")
-
+    
+    # Argument positionnel : IDUL du joueur
+    parser.add_argument(
+        "idul",
+        type=str,
+        help="IDUL du joueur"
+    )
+    
+    # Option -a / --autonome : active le mode autonome
+    parser.add_argument(
+        "-a", "--autonome",
+        action="store_true",
+        help="Jouer de façon autonome"
+    )
+    
+    # Retourne les arguments analysés
     return parser.parse_args()
