@@ -1,6 +1,6 @@
 """Creation d'une class QuixoIA"""
-from quixo import Quixo, QuixoError, Plateau
 import random
+from quixo import Quixo, QuixoError, Plateau
 """Class qui permet a l'ordinateur de jouer de facon autonome"""
 
 class QuixoIA(Quixo):
