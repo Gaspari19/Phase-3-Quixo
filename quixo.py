@@ -125,20 +125,20 @@ def interpréter_la_commande():
     """
     # Création de l'objet ArgumentParser
     parser = argparse.ArgumentParser(description="Quixo")
-    
+
     # Argument positionnel : IDUL du joueur
     parser.add_argument(
         "idul",
         type=str,
         help="IDUL du joueur"
     )
-    
+
     # Option -a / --autonome : active le mode autonome
     parser.add_argument(
         "-a", "--autonome",
         action="store_true",
         help="Jouer de façon autonome"
     )
-    
+
     # Retourne les arguments analysés
     return parser.parse_args()

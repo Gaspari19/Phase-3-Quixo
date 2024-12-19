@@ -298,7 +298,7 @@ class Plateau:
         # Vérification des diagonales
         diagonale_principale = [self[i, i] for i in range(1, 6)]
         diagonale_secondaire = [self[i, 6 - i] for i in range(1, 6)]
-        
+
         if diagonale_principale.count(joueur) == longueur:
             total_groupes += 1
         if diagonale_secondaire.count(joueur) == longueur:
@@ -314,7 +314,8 @@ class Plateau:
         :param y: Ligne d'origine du cube (1 à 5).
         :param direction: Direction du déplacement ("haut", "bas", "gauche", "droite").
         :param joueur: Le joueur effectuant le coup ("X" ou "O").
-        :return: Une nouvelle instance de Plateau représentant l'état simulé du plateau après le coup.
+        :return: Une nouvelle instance de Plateau représentant l'état simulé du 
+        plateau après le coup.
         :raises QuixoError: Si les paramètres du coup sont invalides.
         """
         # Crée une copie du plateau actuel pour la simulation
@@ -325,7 +326,7 @@ class Plateau:
 
         # Retourne le plateau simulé
         return plateau_simule
-    
+
     def partie_terminée(self):
         """
         Vérifie si la partie est terminée et identifie le vainqueur éventuel.
@@ -335,11 +336,12 @@ class Plateau:
         # Vérification pour le joueur "X"
         if self.compter_lignes("X", 5) > 0:
             return "X"
-        
+
         # Vérification pour le joueur "O"
         if self.compter_lignes("O", 5) > 0:
             return "O"
-        
+
         # Si aucune ligne, colonne ou diagonale de 5 cubes n'est trouvée
         return None
+
 

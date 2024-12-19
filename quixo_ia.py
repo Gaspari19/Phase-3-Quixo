@@ -1,20 +1,24 @@
+"""Creation d'une class QuixoIA"""
 from quixo import Quixo, QuixoError, Plateau
+import random
+"""Class qui permet a l'ordinateur de jouer de facon autonome"""
 
 class QuixoIA(Quixo):
 
     def lister_les_coups_possibles(self, plateau, cube):
         """
         Liste tous les coups possibles pour un joueur donné.
-        
+
         :param plateau: Une instance de la classe Plateau représentant l'état actuel du jeu.
         :param cube: Un caractère ("X" ou "O") représentant le joueur actuel.
-        :return: Une liste de dictionnaires contenant les informations des coups possibles (origine et direction).
+        :return: Une liste de dictionnaires contenant les informations des coups 
+        possibles (origine et direction).
         :raises QuixoError: Si le cube est invalide ou si la partie est déjà terminée.
         """
         # Vérifie que le cube est valide ("X" ou "O")
         if cube not in ("X", "O"):
             raise QuixoError('Le cube doit être "X" ou "O".')
-        
+
         # Vérifie si la partie est terminée
         if self.partie_terminée():
             raise QuixoError("La partie est déjà terminée.")
@@ -53,7 +57,7 @@ class QuixoIA(Quixo):
                             coups_possibles.append({"origine": [i, j], "direction": "gauche"})
                         if i < 5:  # Déplacement vers la droite
                             coups_possibles.append({"origine": [i, j], "direction": "droite"})
-                    
+
         # Retourne la liste complète des coups possibles
         return coups_possibles
 
@@ -62,7 +66,8 @@ class QuixoIA(Quixo):
         Analyse le plateau pour évaluer les lignes formées par les cubes de chaque joueur.
 
         :param plateau: Une instance de la classe Plateau représentant l'état actuel du jeu.
-        :return: Un dictionnaire avec les clés "X" et "O", contenant des informations sur les lignes formées.
+        :return: Un dictionnaire avec les clés "X" et "O", contenant des informations sur 
+        les lignes formées.
         """
         analyse = {
             "X": {2: 0, 3: 0, 4: 0, 5: 0},
@@ -88,30 +93,32 @@ class QuixoIA(Quixo):
         # Vérification pour le joueur "O"
         if self.plateau.compter_lignes("O", 5) > 0:
             return "O"
-        
+
         # Si aucune ligne, colonne ou diagonale de 5 cubes n'est trouvée
         return None
-    
+
     def trouver_un_coup_vainqueur(self, joueur):
         """
         Identifie un coup permettant de gagner la partie pour un joueur donné.
 
         :param joueur: Le symbole du joueur ("X" ou "O").
-        :return: Un tuple ([x, y], direction) représentant le coup vainqueur ou None si aucun coup n'est trouvé.
+        :return: Un tuple ([x, y], direction) représentant le coup vainqueur ou None si 
+        aucun coup n'est trouvé.
         """
         # Liste des coups possibles (obtenue via la méthode lister_les_coups_possibles)
         coups_possibles = self.lister_les_coups_possibles(self.plateau, joueur)
-        
+
         # Parcours des coups possibles
         for coup in coups_possibles:
-            # Simulation du coup : déplace le jeton et retourne une copie du tableau avec la simulation
+            # Simulation du coup : déplace le jeton et retourne une copie du tableau 
+            # avec la simulation
             plateau_simulé = self.plateau.simuler_coup(joueur, coup['origine'], coup['direction'])
-            
+
             # Vérifie si la simulation cela entraîne une victoire
             if plateau_simulé.partie_terminée() == joueur:
                 # Si c'est un coup gagnant, retourne le coup (coordonnée et direction)
                 return coup
-        
+
         # Si aucun coup gagnant n'est trouvé, retourne None
         return None
 
@@ -120,7 +127,8 @@ class QuixoIA(Quixo):
         Identifie un coup permettant de bloquer une victoire imminente de l'adversaire.
 
         :param joueur: Le symbole du joueur ("X" ou "O").
-        :return: Un tuple ([x, y], direction) représentant le coup bloquant ou None si aucun coup bloquant n'est trouvé.
+        :return: Un tuple ([x, y], direction) représentant le coup bloquant ou 
+        None si aucun coup bloquant n'est trouvé.
         """
         # Identifier l'adversaire
         adversaire = "O" if joueur == "X" else "X"
@@ -130,7 +138,8 @@ class QuixoIA(Quixo):
 
         # Si un tel coup existe
         if coup_gagnant_adversaire:
-            # Et que ce coup est parmis la liste des coups possibles du joueurs, retourne ce coup comme coup bloquant
+            # Et que ce coup est parmis la liste des coups possibles du joueurs, 
+            # retourne ce coup comme coup bloquant
             if coup_gagnant_adversaire in self.lister_les_coups_possibles(self.plateau, joueur):
                 return coup_gagnant_adversaire
 
@@ -149,19 +158,21 @@ class QuixoIA(Quixo):
             raise QuixoError('Le symbole doit être "X" ou "O".')
         if self.partie_terminée():
             raise QuixoError("La partie est déjà terminée.")
-        
+
         # Priorité 1 : Coup gagnant
         coup_vainqueur = self.trouver_un_coup_vainqueur(joueur)
         if coup_vainqueur:
-            self.plateau.insérer_un_cube(joueur, coup_vainqueur['origine'], coup_vainqueur['direction'])
+            self.plateau.insérer_un_cube(joueur, coup_vainqueur['origine']
+                                         , coup_vainqueur['direction'])
             return coup_vainqueur
-        
+
         # Priorité 2 : Coup bloquant
         coup_bloquant = self.trouver_un_coup_bloquant(joueur)
         if coup_bloquant:
-            self.plateau.insérer_un_cube(joueur, coup_bloquant['origine'], coup_bloquant['direction'])
+            self.plateau.insérer_un_cube(joueur, coup_bloquant['origine'],
+                                          coup_bloquant['direction'])
             return coup_bloquant
-        
+
         # Priorité 3 : Coup aléatoire si aucun autre choix
         import random
         coups_possibles = self.lister_les_coups_possibles(self.plateau, joueur)

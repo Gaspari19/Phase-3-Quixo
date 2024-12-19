@@ -46,7 +46,9 @@ if __name__ == "__main__":
                 ia.plateau = Plateau(plateau)
 
                 # Vérifie si la partie est terminée
-                id_partie, joueurs, plateau, vainqueur = récupérer_une_partie(id_partie, args.idul, SECRET)
+                id_partie, joueurs, plateau, vainqueur = récupérer_une_partie(id_partie,
+                                                                               args.idul, SECRET)
+                
                 if vainqueur:
                     print(f"\nPartie terminée ! Le gagnant est : {vainqueur}")
                     break
@@ -75,9 +77,10 @@ if __name__ == "__main__":
                     args.idul,
                     SECRET
                 )
-                
+
                 # Vérifie si la partie est terminée
-                id_partie, joueurs, plateau, vainqueur = récupérer_une_partie(id_partie, args.idul, SECRET)
+                id_partie, joueurs, plateau, vainqueur = récupérer_une_partie(id_partie,
+                                                                               args.idul, SECRET)
                 if vainqueur:
                     print(f"\nPartie terminée ! Le gagnant est : {vainqueur}")
                     break
